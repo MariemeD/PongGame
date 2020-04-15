@@ -7,12 +7,15 @@ var game = {
     groundLayer : null,
     scorePosPlayer1 : 300,
     scorePosPlayer2 : 365,
+    scoreLayer : null,
+    playersBallLayer : null,
+
 
     init : function() {
 
         // Terrain
         this.groundLayer = game.display.createLayer("terrain", this.groundWidth, this.groundHeight,
-            undefined, 0, "#000080", 1000, 1000);
+            undefined, 0, "#000080", 0, 0);
 
         // Séparation terrain
         game.display.drawRectangleInLayer(this.groundLayer, this.netWidth, this.groundHeight, this.netColor,
@@ -23,7 +26,14 @@ var game = {
             undefined, 1, undefined, 0, 0);
 
         // Affichage score dans terrain
-        game.display.drawTextInLayer(this.scoreLayer, "SCORE", "50px Arial", "#FF0000",
-            100, 100);
-    }
+        this.displayScore(0,0);
+
+    },
+
+    displayScore : function(scorePlayer1, scorePlayer2) {
+        game.display.drawTextInLayer(this.scoreLayer, scorePlayer1, "60px Arial", "#FFFFFF",
+            this.scorePosPlayer1, 55);
+        game.display.drawTextInLayer(this.scoreLayer, scorePlayer2, "60px Arial", "#FFFFFF",
+            this.scorePosPlayer2, 55);
+    },
 };
