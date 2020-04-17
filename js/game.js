@@ -16,6 +16,27 @@ var game = {
         color : "#FFFFFF",
         posX : 200,
         posY : 200,
+        speed : 1,
+
+        //Déplacement de la balle
+        move : function() {
+            this.posX += this.directionX * this.speed;
+            this.posY += this.directionY * this.speed;
+        },
+
+        // Raffréchissement positionnement ball
+        moveBall : function() {
+            this.ball.move();
+            this.ball.bounce();
+            this.displayBall();
+        },
+
+        bounce : function() {
+            if ( this.posX > game.groundWidth || this.posX < 0 )
+                this.directionX = -this.directionX;
+            if ( this.posY > game.groundHeight || this.posY < 0  )
+                this.directionY = -this.directionY;
+        },
     },
 
     // Joueur 1 raquette
@@ -62,7 +83,6 @@ var game = {
         this.displayBall(200,200);
 
         this.displayPlayers();
-
 
     },
 
