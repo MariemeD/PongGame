@@ -9,33 +9,29 @@ var game = {
     scorePosPlayer2 : 365,
     scoreLayer : null,
     playersBallLayer : null,
+
     // Encapsulation de la balle
     ball : {
-        width : 15,
-        height : 15,
+        width : 10,
+        height : 10,
         color : "#FFFFFF",
         posX : 200,
         posY : 200,
         speed : 1,
+        directionX : 1,
+        directionY : 1,
+        bounce : function(soundToPlay) {
+            if ( this.posX > game.groundWidth || this.posX < 0 ) {
+                this.directionX = -this.directionX;
+            }
+            if ( this.posY > game.groundHeight || this.posY < 0  ) {
+                this.directionY = -this.directionY;
+            }
+        },
 
-        //Déplacement de la balle
-        move : function() {
+        move : function() { // dedié au deplacement de la balle
             this.posX += this.directionX * this.speed;
             this.posY += this.directionY * this.speed;
-        },
-
-        // Raffréchissement positionnement ball
-        moveBall : function() {
-            this.ball.move();
-            this.ball.bounce();
-            this.displayBall();
-        },
-
-        bounce : function() {
-            if ( this.posX > game.groundWidth || this.posX < 0 )
-                this.directionX = -this.directionX;
-            if ( this.posY > game.groundHeight || this.posY < 0  )
-                this.directionY = -this.directionY;
         },
     },
 
@@ -48,7 +44,7 @@ var game = {
         posY : 200
     },
 
-    // Joueur 12raquette
+    // Joueur 2raquette
     playerTwo : {
         width : 10,
         height : 100,
@@ -105,4 +101,15 @@ var game = {
         game.display.drawRectangleInLayer(this.playersBallLayer, this.playerTwo.width, this.playerTwo.height, this.playerTwo.color, this.playerTwo.posX, this.playerTwo.posY);
     },
 
+    // Raffréchissement positionnement ball
+    moveBall : function() {
+        this.ball.move();
+        this.ball.bounce();
+        this.displayBall();
+    },
+
+    // Pour effacer la trainée blanche
+    clearLayer : function(targetLayer) {
+        targetLayer.clear();
+    }
 };
