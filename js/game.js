@@ -80,6 +80,8 @@ var game = {
 
         this.displayPlayers();
 
+        this.initKeyboard(game.control.onKeyDown, game.control.onKeyUp);
+
     },
 
     //Fonction affichage score
@@ -111,5 +113,11 @@ var game = {
     // Pour effacer la trainée blanche
     clearLayer : function(targetLayer) {
         targetLayer.clear();
+    },
+
+    // Association événement/fonction
+    initKeyboard : function(onKeyDownFunction, onKeyUpFunction) {
+        window.onkeydown = onKeyDownFunction;
+        window.onkeyup = onKeyUpFunction;
     }
 };
