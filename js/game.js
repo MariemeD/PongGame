@@ -35,9 +35,10 @@ var game = {
         },
 
         collide : function(anotherItem) {
-            return !(this.posX >= anotherItem.posX + anotherItem.width || this.posX <= anotherItem.posX
-                || this.posY >= anotherItem.posY + anotherItem.height || this.posY <= anotherItem.posY);
-        }
+            return !(this.posX >= anotherItem.posX + anotherItem.width || this.posX <= anotherItem.posX - this.width
+                || this.posY >= anotherItem.posY + anotherItem.height || this.posY <= anotherItem.posY - this.height);
+
+        },
     },
 
     // Joueur 1 raquette
