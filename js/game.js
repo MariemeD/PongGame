@@ -41,7 +41,9 @@ var game = {
         height : 100,
         color : "#7FFF00",
         posX : 17,
-        posY : 200
+        posY : 200,
+        goUp : false,
+        goDown : false
     },
 
     // Joueur 2raquette
@@ -50,7 +52,9 @@ var game = {
         height : 100,
         color : "#FF1493",
         posX : 690,
-        posY : 200
+        posY : 200,
+        goUp : false,
+        goDown : false
     },
 
 
@@ -80,7 +84,7 @@ var game = {
 
         this.displayPlayers();
 
-        this.initKeyboard(game.control.onKeyDown, game.control.onKeyUp);
+        this.initKeyboard(game.control.onKeyDown, game.control.onKeyUp, game.control.onKeyDown2, game.control.onKeyUp2);
 
     },
 
@@ -116,8 +120,26 @@ var game = {
     },
 
     // Association événement/fonction
-    initKeyboard : function(onKeyDownFunction, onKeyUpFunction) {
+    initKeyboard : function(onKeyDownFunction, onKeyUpFunction, onKeyDownFunction2, onKeyUpFunction2) {
         window.onkeydown = onKeyDownFunction;
         window.onkeyup = onKeyUpFunction;
-    }
+        window.onkeydown2 = onKeyDownFunction2;
+        window.onkeyup2 = onKeyUpFunction2;
+
+    },
+
+    // Mouvement des joueurs
+    movePlayers : function() {
+        if (game.playerOne.goUp && game.playerOne.posY > 15)
+            game.playerOne.posY-=5;
+        else if (game.playerOne.goDown && game.playerOne.posY < game.groundHeight - game.playerOne.height)
+            game.playerOne.posY+=5;
+    },
+
+    movePlayers2 : function() {
+        if (game.playerTwo.goUp && game.playerTwo.posY > 15)
+            game.playerTwo.posY-=5;
+        else if (game.playerTwo.goDown && game.playerTwo.posY < game.groundHeight - game.playerTwo.height)
+            game.playerTwo.posY+=5;
+}
 };
