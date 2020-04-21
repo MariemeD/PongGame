@@ -84,7 +84,7 @@ var game = {
 
         this.displayPlayers();
 
-        this.initKeyboard(game.control.onKeyDown, game.control.onKeyUp, game.control.onKeyDown2, game.control.onKeyUp2);
+        this.initKeyboard(game.control.onKeyDown, game.control.onKeyUp);
 
     },
 
@@ -120,12 +120,9 @@ var game = {
     },
 
     // Association événement/fonction
-    initKeyboard : function(onKeyDownFunction, onKeyUpFunction, onKeyDownFunction2, onKeyUpFunction2) {
+    initKeyboard : function(onKeyDownFunction, onKeyUpFunction) {
         window.onkeydown = onKeyDownFunction;
         window.onkeyup = onKeyUpFunction;
-        window.onkeydown2 = onKeyDownFunction2;
-        window.onkeyup2 = onKeyUpFunction2;
-
     },
 
     // Mouvement des joueurs
@@ -135,11 +132,4 @@ var game = {
         else if (game.playerOne.goDown && game.playerOne.posY < game.groundHeight - game.playerOne.height)
             game.playerOne.posY+=5;
     },
-
-    movePlayers2 : function() {
-        if (game.playerTwo.goUp && game.playerTwo.posY > 15)
-            game.playerTwo.posY-=5;
-        else if (game.playerTwo.goDown && game.playerTwo.posY < game.groundHeight - game.playerTwo.height)
-            game.playerTwo.posY+=5;
-}
 };
