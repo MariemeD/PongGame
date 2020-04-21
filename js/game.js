@@ -57,7 +57,6 @@ var game = {
         goDown : false
     },
 
-
     init : function() {
 
         // Création layer Terrain
