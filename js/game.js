@@ -33,6 +33,11 @@ var game = {
             this.posX += this.directionX * this.speed;
             this.posY += this.directionY * this.speed;
         },
+
+        collide : function(anotherItem) {
+            return !(this.posX >= anotherItem.posX + anotherItem.width || this.posX <= anotherItem.posX
+                || this.posY >= anotherItem.posY + anotherItem.height || this.posY <= anotherItem.posY);
+        }
     },
 
     // Joueur 1 raquette
@@ -130,5 +135,13 @@ var game = {
             game.playerOne.posY-=5;
         else if (game.playerOne.goDown && game.playerOne.posY < game.groundHeight - game.playerOne.height)
             game.playerOne.posY+=5;
+    },
+
+    //Choc entre balle et raquettes
+    collideBallWithPlayersAndAction : function() {
+        if ( this.ball.collide(game.playerOne) )
+            game.ball.directionX = -game.ball.directionX;
+        if ( this.ball.collide(game.playerTwo) )
+            game.ball.directionX = -game.ball.directionX;
     },
 };
