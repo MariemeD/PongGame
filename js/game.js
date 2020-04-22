@@ -67,7 +67,9 @@ var game = {
         posY : 200,
         goUp : false,
         goDown : false,
-        originalPosition : "left"
+        originalPosition : "left",
+        score : 0,
+        ai : false
     },
 
     // Joueur 2raquette
@@ -79,8 +81,9 @@ var game = {
         posY : 200,
         goUp : false,
         goDown : false,
-        originalPosition : "right"
-
+        originalPosition : "right",
+        score : 0,
+        ai : true
     },
 
     init : function() {
@@ -112,7 +115,6 @@ var game = {
         this.initKeyboard(game.control.onKeyDown, game.control.onKeyUp);
 
         game.ai.setPlayerAndBall(this.playerTwo, this.ball);
-
     },
 
     //Fonction affichage score
@@ -168,11 +170,24 @@ var game = {
             game.ball.directionX = -game.ball.directionX;
     },
 
+    // Perte de balle d'un joueur : Increment du score
     lostBall : function() {
         if ( this.ball.lost(this.playerOne) ) {
-            // action si joueur de gauche perd la balle
+            this.playerTwo.score++;
+            this.ball.inGame = false;
+
+            if ( this.playerOne.ai ) {
+                setTimeout(game.ai.startBall(), 3000);
+            }
         } else if ( this.ball.lost(this.playerTwo) ) {
-            // action si joueur de droiteperd la balle
+            this.playerOne.score++;
+            this.ball.inGame = false;
+
+            if ( this.playerTwo.ai ) {
+                setTimeout(game.ai.startBall(), 3000);
+            }
         }
-    },
+        this.scoreLayer.clear();
+        this.displayScore(this.playerOne.score, this.playerTwo.score);
+    }
 };

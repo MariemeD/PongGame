@@ -9,25 +9,26 @@ game.ai = {
     move : function() {
         if ( this.ball.directionX === 1 ) {
             if ( this.player.originalPosition === "right" ) {
-                // follow
+                // Suivre
                 this.followBall();
             }
             if ( this.player.originalPosition === "left" ) {
-                // center
+                // centrer
                 this.goCenter();
             }
         } else {
             if ( this.player.originalPosition === "right" ) {
-                // center
+                // centrer
                 this.goCenter();
             }
             if ( this.player.originalPosition === "left" ) {
-                // follow
+                // Suivre
                 this.followBall();
             }
         }
     },
 
+    // Suivre
     followBall : function() {
         if ( this.ball.posY < this.player.posY + this.player.height/2 ) {
             // la position de la balle est sur l'écran, au dessus de celle de la raquette
@@ -38,6 +39,7 @@ game.ai = {
         }
     },
 
+    // Centrer
     goCenter : function() {
         if ( this.player.posY + this.player.height/2 > game.groundHeight / 2 ) {
             this.player.posY --;
@@ -45,5 +47,22 @@ game.ai = {
             this.player.posY ++;
         }
     },
+
+    startBall : function() {
+        if ( this.player.originalPosition === "right" ) {
+            this.ball.inGame = true;
+            this.ball.posX = this.player.posX;
+            this.ball.posY = this.player.posY;
+            this.ball.directionX = -1;
+            this.ball.directionY = 1;
+        } else {
+            this.ball.inGame = true;
+            this.ball.posX = this.player.posX + this.player.width;
+            this.ball.posY = this.player.posY;
+            this.ball.directionX = 1;
+            this.ball.directionY = 1;
+        }
+
+    }
 
 };
