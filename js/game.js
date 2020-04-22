@@ -190,4 +190,5 @@ var game = {
         this.scoreLayer.clear();
         this.displayScore(this.playerOne.score, this.playerTwo.score);
     }
+
 };
