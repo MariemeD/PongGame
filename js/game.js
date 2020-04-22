@@ -17,9 +17,12 @@ var game = {
         color : "#FFFFFF",
         posX : 200,
         posY : 200,
-        speed : 1,
+        speed : 1.5,
         directionX : 1,
         directionY : 1,
+        inGame : false,
+
+        // Rebond
         bounce : function(soundToPlay) {
             if ( this.posX > game.groundWidth || this.posX < 0 ) {
                 this.directionX = -this.directionX;
@@ -30,15 +33,29 @@ var game = {
         },
 
         move : function() { // dedié au deplacement de la balle
-            this.posX += this.directionX * this.speed;
-            this.posY += this.directionY * this.speed;
+            if ( this.inGame ) {
+                this.posX += this.directionX * this.speed;
+                this.posY += this.directionY * this.speed;
+            }
         },
 
+        // Collision
         collide : function(anotherItem) {
             return !(this.posX >= anotherItem.posX + anotherItem.width || this.posX <= anotherItem.posX - this.width
                 || this.posY >= anotherItem.posY + anotherItem.height || this.posY <= anotherItem.posY - this.height);
 
         },
+
+        // Perte de balle
+        lost : function(player) {
+            var returnValue = false;
+            if ( player.originalPosition === "left" && this.posX < player.posX - this.width ) {
+                returnValue = true;
+            } else if ( player.originalPosition === "right" && this.posX > player.posX + player.width ) {
+                returnValue = true;
+            }
+            return returnValue;
+        }
     },
 
     // Joueur 1 raquette
@@ -49,7 +66,8 @@ var game = {
         posX : 17,
         posY : 200,
         goUp : false,
-        goDown : false
+        goDown : false,
+        originalPosition : "left"
     },
 
     // Joueur 2raquette
@@ -60,7 +78,9 @@ var game = {
         posX : 690,
         posY : 200,
         goUp : false,
-        goDown : false
+        goDown : false,
+        originalPosition : "right"
+
     },
 
     init : function() {
@@ -90,6 +110,8 @@ var game = {
         this.displayPlayers();
 
         this.initKeyboard(game.control.onKeyDown, game.control.onKeyUp);
+
+        game.ai.setPlayerAndBall(this.playerTwo, this.ball);
 
     },
 
@@ -144,5 +166,13 @@ var game = {
             game.ball.directionX = -game.ball.directionX;
         if ( this.ball.collide(game.playerTwo) )
             game.ball.directionX = -game.ball.directionX;
+    },
+
+    lostBall : function() {
+        if ( this.ball.lost(this.playerOne) ) {
+            // action si joueur de gauche perd la balle
+        } else if ( this.ball.lost(this.playerTwo) ) {
+            // action si joueur de droiteperd la balle
+        }
     },
 };

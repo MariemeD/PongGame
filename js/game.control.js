@@ -6,6 +6,10 @@ game.control = {
         } else if ( event.keyCode === game.keycode.KEYUP ) {
             game.playerOne.goUp = true;
         }
+
+        if ( event.keyCode === game.keycode.SPACEBAR ) {
+            game.ball.inGame = true;
+        }
     },
 
     onKeyUp : function(event) {
