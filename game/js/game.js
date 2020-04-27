@@ -93,7 +93,11 @@ var game = {
         game.display.drawTextInLayer(this.scoreLayer, "SCORE", "10px Arial", "#000000", 10, 10);
         this.playersBallLayer = game.display.createLayer("joueursetballe", this.groundWidth, this.groundHeight, undefined, 2, undefined, 0, 0);
 
-        game.display.drawTextInLayer(this.playersBallLayer, "JOUEURSETBALLE", "10px Arial", "#FF0000", 100, 100);
+        // Séparation terrain
+        game.display.drawRectangleInLayer(this.groundLayer, this.netWidth, this.groundHeight, this.netColor,
+            this.groundWidth / 2 - this.netWidth / 2, 0);
+
+        game.display.drawTextInLayer(this.playersBallLayer, "JOUEURSETBALLE", "10px Arial", "#000000", 100, 100);
 
         this.displayScore(this.playerOne.score, this.playerTwo.score);
         this.displayBall(200,200);
