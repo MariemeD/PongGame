@@ -1,8 +1,8 @@
 var game = {
     groundWidth : null,
     groundHeight : null,
-    groundColor : "#000000",
-    netColor : "#FFFFFF",
+    groundColor : "#DCDCDC",
+    netColor : "#000000",
     netWidth : null,
     socket: null,
     groundLayer : null,
@@ -17,7 +17,7 @@ var game = {
     ball : {
         width : 10,
         height : 10,
-        color : "#FFFF00",
+        color : "#ADFF2F",
         posX : 200,
         posY : 200,
         speed : 1,
@@ -50,8 +50,8 @@ var game = {
     // Joueur 1
     playerOne : {
         id : 1,
-        width : 10,
-        height : 80,
+        width : 15,
+        height : 150,
         color : "#000080",
         posX : 30,
         posY : 50,
@@ -66,8 +66,8 @@ var game = {
     // Joueur 2
     playerTwo : {
         id : 2,
-        width : 10,
-        height : 80,
+        width : 15,
+        height : 150,
         color : "#FF4500",
         posX : 650,
         posY : 50,
@@ -85,12 +85,12 @@ var game = {
         this.groundWidth = param.groundWidth;
         this.groundHeight = param.groundHeight;
 
-        this.groundLayer = game.display.createLayer("terrain", this.groundWidth, this.groundHeight, undefined, 0, "#000000", 0, 0);
+        this.groundLayer = game.display.createLayer("terrain", this.groundWidth, this.groundHeight, undefined, 0, "#DCDCDC", 0, 0);
 
         game.display.drawRectangleInLayer(this.groundLayer, this.netWidth, this.groundHeight, this.netColor, this.groundWidth/2 - this.netWidth/2, 0);
         this.scoreLayer = game.display.createLayer("score", this.groundWidth, this.groundHeight, undefined, 1, undefined, 0, 0);
 
-        game.display.drawTextInLayer(this.scoreLayer, "SCORE", "10px Arial", "#FF0000", 10, 10);
+        game.display.drawTextInLayer(this.scoreLayer, "SCORE", "10px Arial", "#000000", 10, 10);
         this.playersBallLayer = game.display.createLayer("joueursetballe", this.groundWidth, this.groundHeight, undefined, 2, undefined, 0, 0);
 
         game.display.drawTextInLayer(this.playersBallLayer, "JOUEURSETBALLE", "10px Arial", "#FF0000", 100, 100);
