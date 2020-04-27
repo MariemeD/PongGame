@@ -20,8 +20,8 @@ app.get('/', (req, res) => {
 app.use("/js", express.static('../public/js/'));
 
 let game = {
-    groundWidth : 700,
-    groundHeight : 400,
+    groundWidth : 900,
+    groundHeight : 500,
     netWidth : 6,
     init: false,
     stoppedAi : [],
@@ -34,7 +34,7 @@ let game = {
         speed : 1,
         directionX : 1,
         directionY : 1,
-
+        // Rebond
         bounce : function(soundToPlay) {
             if ( game.ball.posX > game.groundWidth || this.posX < 0 ) {
                 this.directionX = -this.directionX;
@@ -43,13 +43,16 @@ let game = {
                 this.directionY = -this.directionY;
             }
         },
+        // Coordonnée balle
         coord: function(){
             return [this.posX + this.directionX * this.speed, this.posY + this.directionY * this.speed]
         },
+        // Deplacement de la balle
         move : function(coord) {
             this.posX = coord[0];
             this.posY = coord[1];
         },
+        // Collision de la balle avec autre chose
         collide : function(anotherItem) {
             if ( !( this.posX >= anotherItem.posX + anotherItem.width || this.posX <= anotherItem.posX - this.width || this.posY >= anotherItem.posY + anotherItem.height || this.posY <= anotherItem.posY - this.height ) ) {
                 return true;
@@ -57,6 +60,7 @@ let game = {
             return false;
         }
     },
+    // Mouvement ball
     moveBall: function(coord) {
         if(coord[0] === this.ball.posX && coord[1] === this.ball.posY)
             return;
@@ -76,10 +80,10 @@ let game = {
         }
         return null;
     },
-
+    // Joueur 1
     playerOne : {
         width : 10,
-        height : 50,
+        height : 80,
         color : "#000080",
         posX : 30,
         posY : 50,
@@ -90,10 +94,10 @@ let game = {
         idClient: null
 
     },
-
+    // Joueur 2
     playerTwo : {
         width : 10,
-        height : 50,
+        height : 80,
         color : "#FF4500",
         posX : 650,
         posY : 50,
@@ -102,9 +106,9 @@ let game = {
         goDown : false,
         originalPosition : "right",
         idClient: null
-    }
+    },
 
-    ,
+    // Assignement No aux joueurs
     assignPlay : function(id)
     {
         if(this.playerOne.idClient == null)
@@ -115,7 +119,7 @@ let game = {
             this.playerTwo.idClient = id;
         }
     },
-
+    // Collision ball / raquette
     collideBallWithPlayersAndAction : function() {
         if ( this.ball.collide(game.playerOne) || this.ball.collide(game.playerTwo) ) {
             game.ball.directionX = -game.ball.directionX;
@@ -124,8 +128,9 @@ let game = {
     }
 };
 
-let initPlayersCoords = {
 
+// Initialisation des coordonnées des joueurs
+let initPlayersCoords = {
     player1 : {
         y : game.playerOne.posY
     },
@@ -148,7 +153,6 @@ setInterval(function(){
     io.to(room).emit('ball',[game.ball.posX,game.ball.posY,direction]);
 
     let message = {
-
         player1 : {
             y : game.playerOne.posY,
             idClient : game.playerOne.idClient
@@ -157,17 +161,16 @@ setInterval(function(){
             y : game.playerTwo.posY,
             idClient : game.playerTwo.idClient
         },
-
     };
     io.to(room).emit('players',message);
 }, 5);
 
+// Attrape une connexion
 io.on('connection', (socket) => {
     console.log('a user connected', socket);
     console.log("Utilisateur Connecté");
-
     socket.join(room);
-
+    // Initialisation du jeu
     game.assignPlay(socket.id);
     io.to(room).emit('init',game);
     io.to(room).emit('score',[0,0]);
@@ -175,17 +178,17 @@ io.on('connection', (socket) => {
 
 
     io.to(room).emit('players',initPlayersCoords);
-    // Deconnexion
+    // Deconnexion du jeu
     socket.on('disconnect', () => {
         console.log('user disconnected');
     });
-
+    // Mouvement des joueurs
     socket.on('movePlayers', (message) => {
         game.playerOne.posY  = message.player1.y;
         game.playerTwo.posY  = message.player2.y;
 
     });
-
+    // Arret de l'IA
     socket.on('stopIa', (message) => {
         game.stoppedAi.push(message);
         if(message[0] === 0)
