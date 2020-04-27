@@ -18,4 +18,14 @@ http.listen(3000, () => {
     console.info('HTTP server started on port 3000');
 });
 
+socket.on('stopIa', (message) => {
+    game.stoppedAi.push(message);
+    if(message[0] === 0)
+    {
+        game.playerTwo.idClient = socket.id;
+    }
+    game.socket.emit('stopIaReturn');
+
+});
+
 

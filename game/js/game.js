@@ -9,6 +9,8 @@ var game = {
     scorePosPlayer2 : 365,
     scoreLayer : null,
     playersBallLayer : null,
+    stoppedAi : [],
+
 
     // Encapsulation de la balle
     ball : {
@@ -69,7 +71,8 @@ var game = {
         goDown : false,
         originalPosition : "left",
         score : 0,
-        ai : false
+        ai : false,
+        id : null,
     },
 
     // Joueur 2raquette
@@ -83,7 +86,8 @@ var game = {
         goDown : false,
         originalPosition : "right",
         score : 0,
-        ai : true
+        ai : true,
+        id : null,
     },
 
     init : function() {
@@ -189,6 +193,6 @@ var game = {
         }
         this.scoreLayer.clear();
         this.displayScore(this.playerOne.score, this.playerTwo.score);
-    }
+    },
 
 };
