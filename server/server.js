@@ -19,7 +19,7 @@ app.get('/', (req, res) => {
 app.use("/js", express.static('../game/js/'));
 
 let game = {
-    groundWidth : 900,
+    groundWidth : 700,
     groundHeight : 500,
     netWidth : 6,
     init: false,
