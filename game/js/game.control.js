@@ -1,42 +1,64 @@
-// Contrôle du jeu
 game.control = {
+
+    // Déclaration
+    controlSystem : null,
+    mousePointer : null,
+
+    // KEYDOW : raquette en bas
     onKeyDown : function(event) {
-        if ( event.keyCode === game.keycode.KEYDOWN ) {
-            game.playerOne.goDown = true;
-        } else if ( event.keyCode === game.keycode.KEYUP ) {
-            game.playerOne.goUp = true;
+        game.control.controlSystem = "KEYBOARD";
+        if(game.playerOne.usable === true){
+            if ( event.keyCode === game.keycode.KEYDOWN ) {
+                game.playerOne.goDown = true;
+            } else if ( event.keyCode === game.keycode.KEYUP ) {
+                game.playerOne.goUp = true;
+            }
         }
-
-        if ( event.keyCode === game.keycode.SPACEBAR && !game.ball.inGame ) {
-            game.ball.inGame = true;
-            game.ball.posX = game.playerOne.posX + game.playerOne.width;
-            game.ball.posY = game.playerOne.posY;
-            game.ball.directionX = 1;
-            game.ball.directionY = 1;
-        }
-
-        if ( event.keyCode === game.keycode.KEYQ ) {
-            game.socket.emit('stopIa');
-            game.playerTwo.goDown = true;
-        } else if ( event.keyCode === game.keycode.KEYA ) {
-            game.socket.emit('stopIa');
-            game.playerTwo.goUp = true;
+        if(game.playerTwo.usable === true){
+            if ( event.keyCode === game.keycode.KEYQ ) {
+                game.socket.emit('stopIa',[0, game.clientId, 0]);
+                game.playerTwo.goDown = true;
+            } else if ( event.keyCode === game.keycode.KEYA ) {
+                game.socket.emit('stopIa',[0, game.clientId, 0]);
+                game.playerTwo.goUp = true;
+            }
         }
     },
 
-    onKeyUp : function(event) {
-        if ( event.keyCode === game.keycode.KEYDOWN ) {
-            game.playerOne.goDown = false;
-        } else if ( event.keyCode === game.keycode.KEYUP ) {
-            game.playerOne.goUp = false;
+    // Arret de l'IA
+    stopIa : function(id)
+    {
+        if(game.ais[id[0]] !== undefined && game.ais[id[0]] !== undefined && game.ais[id[0]].player !== null )
+        {
+            game.ais[id[0]].enabled = false;
+            if(game.ais[id[0]].player.id === 1)
+            {
+                game.playerOne.clientId = id[1]
+            }
+            if(game.ais[id[0]].player.id === 2)
+            {
+                game.playerTwo.clientId = id[1]
+            }
         }
+    },
 
-        if ( event.keyCode === game.keycode.KEYQ ) {
-            game.socket.emit('stopIa');
-            game.playerTwo.goDown = false;
-        } else if ( event.keyCode === game.keycode.KEYA ) {
-            game.socket.emit('stopIa');
-            game.playerTwo.goUp = false;
+    // ONKEYUP : raquette vers le haut
+    onKeyUp : function(event) {
+        if(game.playerOne.usable === true){
+            if ( event.keyCode === game.keycode.KEYDOWN ) {
+                game.playerOne.goDown = false;
+            } else if ( event.keyCode === game.keycode.KEYUP ) {
+                game.playerOne.goUp = false;
+            }
+        }
+        if(game.playerTwo.usable === true){
+            if ( event.keyCode === game.keycode.KEYQ ) {
+                game.socket.emit('stopIa',[0, game.clientId, 0]);
+                game.playerTwo.goDown = false;
+            } else if ( event.keyCode === game.keycode.KEYA ) {
+                game.socket.emit('stopIa',[0, game.clientId, 0]);
+                game.playerTwo.goUp = false;
+            }
         }
     },
 };
