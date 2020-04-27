@@ -1,28 +1,28 @@
 var game = {
-    groundWidth : 700,
-    groundHeight : 400,
-    groundColor: "#000000",
-    netWidth : 6,
-    netColor: "#FFFFFF",
+    groundWidth : null,
+    groundHeight : null,
+    groundColor : "#000000",
+    netColor : "#FFFFFF",
+    netWidth : null,
+    socket: null,
     groundLayer : null,
-    scorePosPlayer1 : 300,
-    scorePosPlayer2 : 365,
     scoreLayer : null,
     playersBallLayer : null,
-    stoppedAi : [],
-
-
-    // Encapsulation de la balle
+    scorePosPlayer1 : 300,
+    scorePosPlayer2 : 365,
+    wallSound : null,
+    playerSound : null,
+    loaded: false,
+    clientId: null,
     ball : {
         width : 10,
         height : 10,
-        color : "#FFFFFF",
+        color : "#FFFF00",
         posX : 200,
         posY : 200,
-        speed : 1.5,
+        speed : 1,
         directionX : 1,
         directionY : 1,
-        inGame : false,
 
         // Rebond
         bounce : function(soundToPlay) {
@@ -33,166 +33,173 @@ var game = {
                 this.directionY = -this.directionY;
             }
         },
-
-        move : function() { // dedié au deplacement de la balle
-            if ( this.inGame ) {
-                this.posX += this.directionX * this.speed;
-                this.posY += this.directionY * this.speed;
-            }
+        // Cordonnées de la balle
+        coord: function(){
+            return [this.posX + this.directionX * this.speed, this.posY + this.directionY * this.speed]
         },
-
-        // Collision
-        collide : function(anotherItem) {
-            return !(this.posX >= anotherItem.posX + anotherItem.width || this.posX <= anotherItem.posX - this.width
-                || this.posY >= anotherItem.posY + anotherItem.height || this.posY <= anotherItem.posY - this.height);
-
+        // Mouvement de la balle
+        move : function(coord) {
+            this.posX = coord[0];
+            this.posY = coord[1];
+            this.directionX = coord[2];
         },
+    },
+    // IA
+    ais : [
+    ],
+    // Joueur 1
+    playerOne : {
+        id : 1,
+        width : 10,
+        height : 80,
+        color : "#000080",
+        posX : 30,
+        posY : 50,
+        score: 0,
+        goUp : false,
+        goDown : false,
+        usable: true,
+        clientId: null,
+        originalPosition : "left"
 
-        // Perte de balle
-        lost : function(player) {
-            var returnValue = false;
-            if ( player.originalPosition === "left" && this.posX < player.posX - this.width ) {
-                returnValue = true;
-            } else if ( player.originalPosition === "right" && this.posX > player.posX + player.width ) {
-                returnValue = true;
-            }
-            return returnValue;
+    },
+    // Joueur 2
+    playerTwo : {
+        id : 2,
+        width : 10,
+        height : 80,
+        color : "#FF4500",
+        posX : 650,
+        posY : 50,
+        goUp : false,
+        score : 0,
+        goDown : false,
+        usable: true,
+        clientId: null,
+        originalPosition : "right"
+    },
+
+    // INITIALISATION DU JEU
+    init : function(param) {
+
+        this.groundWidth = param.groundWidth;
+        this.groundHeight = param.groundHeight;
+
+        this.groundLayer = game.display.createLayer("terrain", this.groundWidth, this.groundHeight, undefined, 0, "#000000", 0, 0);
+
+        game.display.drawRectangleInLayer(this.groundLayer, this.netWidth, this.groundHeight, this.netColor, this.groundWidth/2 - this.netWidth/2, 0);
+        this.scoreLayer = game.display.createLayer("score", this.groundWidth, this.groundHeight, undefined, 1, undefined, 0, 0);
+
+        game.display.drawTextInLayer(this.scoreLayer, "SCORE", "10px Arial", "#FF0000", 10, 10);
+        this.playersBallLayer = game.display.createLayer("joueursetballe", this.groundWidth, this.groundHeight, undefined, 2, undefined, 0, 0);
+
+        game.display.drawTextInLayer(this.playersBallLayer, "JOUEURSETBALLE", "10px Arial", "#FF0000", 100, 100);
+
+        this.displayScore(this.playerOne.score, this.playerTwo.score);
+        this.displayBall(200,200);
+        this.displayPlayers();
+        this.initKeyboard(game.control.onKeyDown, game.control.onKeyUp);
+        //this.wallSound = new Audio("./sound/wall.ogg");
+        //this.playerSound = new Audio("./sound/player.ogg");
+
+        game.ais[0] = new ai(this.playerTwo, this.ball);
+
+        param.stoppedAi.forEach(function(element){
+            game.control.stopIa(element);
+        });
+        this.disabledPlayers(param);
+
+        this.loaded = true;
+    },
+
+    // Désactivation des joueurs
+    disabledPlayers: function(param)
+    {
+        if(this.playerOne.idClient == null ){
+            this.playerOne.clientId = param.playerOne.idClient;
+        }
+        if(this.playerTwo.clientId == null){
+            this.playerTwo.clientId = param.playerTwo.idClient;
+        }
+
+        if(this.playerOne.clientId !== game.clientId){
+            this.playerOne.usable = false;
+            console.log(false)
+        }
+        if(this.playerTwo.clientId != null && this.playerTwo.clientId !== game.clientId){
+            this.playerTwo.usable = false;
+            console.log(false)
         }
     },
-
-    // Joueur 1 raquette
-    playerOne : {
-        width : 10,
-        height : 100,
-        color : "#7FFF00",
-        posX : 17,
-        posY : 200,
-        goUp : false,
-        goDown : false,
-        originalPosition : "left",
-        score : 0,
-        ai : false,
-        id : null,
-    },
-
-    // Joueur 2raquette
-    playerTwo : {
-        width : 10,
-        height : 100,
-        color : "#FF1493",
-        posX : 690,
-        posY : 200,
-        goUp : false,
-        goDown : false,
-        originalPosition : "right",
-        score : 0,
-        ai : true,
-        id : null,
-    },
-
-    init : function() {
-
-        // Création layer Terrain
-        this.groundLayer = game.display.createLayer("terrain", this.groundWidth, this.groundHeight,
-            undefined, 0, "#000000", 1000, 1000);
-
-        // Séparation terrain
-        game.display.drawRectangleInLayer(this.groundLayer, this.netWidth, this.groundHeight, this.netColor,
-            this.groundWidth / 2 - this.netWidth / 2, 0);
-
-        // Création layer score
-        this.scoreLayer = game.display.createLayer("score", this.groundWidth, this.groundHeight,
-            undefined, 1, undefined, 70, 0);
-
-        // Affichage score dans terrain
-        this.displayScore(0,0);
-
-        // Création layer balle/raquettes
-        this.playersBallLayer = game.display.createLayer("joueursetballe", this.groundWidth,
-            this.groundHeight, undefined, 2, undefined, 0, 0);
-
-        //Affichege de la balle
-        this.displayBall(200,200);
-
-        this.displayPlayers();
-
-        this.initKeyboard(game.control.onKeyDown, game.control.onKeyUp);
-
-        game.ai.setPlayerAndBall(this.playerTwo, this.ball);
-    },
-
-    //Fonction affichage score
+    // Affichage du score sur le terrain
     displayScore : function(scorePlayer1, scorePlayer2) {
-        game.display.drawTextInLayer(this.scoreLayer, scorePlayer1, "60px Arial", "#7FFF00",
-            this.scorePosPlayer1, 55);
-        game.display.drawTextInLayer(this.scoreLayer, scorePlayer2, "60px Arial", "#FF1493",
-            this.scorePosPlayer2, 55);
+        game.display.drawTextInLayer(this.scoreLayer, scorePlayer1, "60px Arial", "#FFFFFF", this.scorePosPlayer1, 55);
+        game.display.drawTextInLayer(this.scoreLayer, scorePlayer2, "60px Arial", "#FFFFFF", this.scorePosPlayer2, 55);
     },
-
-    //Fonction affichage balle
+    // Mise à jour du score
+    updateScore: function(data)
+    {
+        if(this.scoreLayer !== null)
+        {
+            this.scoreLayer.clear();
+            this.displayScore(data[0],data[1]);
+        }
+    },
+    // Affichage de la balle
     displayBall : function() {
         game.display.drawRectangleInLayer(this.playersBallLayer, this.ball.width, this.ball.height, this.ball.color, this.ball.posX, this.ball.posY);
     },
-
-    // Fonction affichage raquettes joueurs
+    // Affichage des joueurs
     displayPlayers : function() {
         game.display.drawRectangleInLayer(this.playersBallLayer, this.playerOne.width, this.playerOne.height, this.playerOne.color, this.playerOne.posX, this.playerOne.posY);
         game.display.drawRectangleInLayer(this.playersBallLayer, this.playerTwo.width, this.playerTwo.height, this.playerTwo.color, this.playerTwo.posX, this.playerTwo.posY);
     },
-
-    // Raffréchissement positionnement ball
-    moveBall : function() {
-        this.ball.move();
-        this.ball.bounce();
-        this.displayBall();
-    },
-
-    // Pour effacer la trainée blanche
+    // Effacer trace
     clearLayer : function(targetLayer) {
         targetLayer.clear();
     },
-
-    // Association événement/fonction
+    // Initialisation du clavier et des commandes
     initKeyboard : function(onKeyDownFunction, onKeyUpFunction) {
         window.onkeydown = onKeyDownFunction;
         window.onkeyup = onKeyUpFunction;
     },
-
-    // Mouvement des joueurs
-    movePlayers : function() {
-        if (game.playerOne.goUp && game.playerOne.posY > 15)
-            game.playerOne.posY-=5;
-        else if (game.playerOne.goDown && game.playerOne.posY < game.groundHeight - game.playerOne.height)
-            game.playerOne.posY+=5;
-    },
-
-    //Choc entre balle et raquettes
-    collideBallWithPlayersAndAction : function() {
-        if ( this.ball.collide(game.playerOne) )
-            game.ball.directionX = -game.ball.directionX;
-        if ( this.ball.collide(game.playerTwo) )
-            game.ball.directionX = -game.ball.directionX;
-    },
-
-    // Perte de balle d'un joueur : Increment du score
-    lostBall : function() {
-        if ( this.ball.lost(this.playerOne) ) {
-            this.playerTwo.score++;
-            this.ball.inGame = false;
-
-            if ( this.playerOne.ai ) {
-                setTimeout(game.ai.startBall(), 3000);
+    // Cordonnées joueurs
+    coordPlayers : function()
+    {
+        var coords = {
+            player1 : {
+                y : game.playerOne.posY
+            },
+            player2 : {
+                y : game.playerTwo.posY
             }
-        } else if ( this.ball.lost(this.playerTwo) ) {
-            this.playerOne.score++;
-            this.ball.inGame = false;
-
-            if ( this.playerTwo.ai ) {
-                setTimeout(game.ai.startBall(), 3000);
+        };
+        if ( game.control.controlSystem === "KEYBOARD" ) {
+            if ( game.playerOne.goUp ) {
+                if(coords.player1.y > 0){
+                    coords.player1.y-=5;
+                }
+            } else if ( game.playerOne.goDown ) {
+                if((coords.player1.y+50) < this.groundHeight){
+                    coords.player1.y+=5;
+                }
+            }
+            if ( game.playerTwo.goUp ) {
+                if(coords.player2.y > 0){
+                    coords.player2.y-=5;
+                }
+            } else if ( game.playerTwo.goDown ) {
+                if((coords.player2.y+50) < this.groundHeight){
+                    coords.player2.y+=5;
+                }
             }
         }
-        this.scoreLayer.clear();
-        this.displayScore(this.playerOne.score, this.playerTwo.score);
+        return coords;
     },
 
+    // Bougez les joueurs
+    movePlayers : function(playersCoords) {
+        game.playerOne.posY = playersCoords.player1.y;
+        game.playerTwo.posY = playersCoords.player2.y;
+    }
 };
