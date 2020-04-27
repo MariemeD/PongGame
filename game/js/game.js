@@ -124,11 +124,9 @@ var game = {
 
         if(this.playerOne.clientId !== game.clientId){
             this.playerOne.usable = false;
-            console.log(false)
         }
         if(this.playerTwo.clientId != null && this.playerTwo.clientId !== game.clientId){
             this.playerTwo.usable = false;
-            console.log(false)
         }
     },
     // Affichage du score sur le terrain
