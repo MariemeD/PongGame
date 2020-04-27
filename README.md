@@ -14,6 +14,7 @@
     <h4> A SAVOIR</h4>
     <p> Appuyez sur les touche du player 2 pour désactiver l'IA</p>
     
-    PROBLEME :(
+    A regler :
       - Le premier point peut etre mal comptabilisé
       - La balle peut rester coincée dans la raquette
+      - Lors d'une reconnexion le score n'est pas remis à 0
