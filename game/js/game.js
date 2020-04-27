@@ -51,8 +51,8 @@ var game = {
     playerOne : {
         id : 1,
         width : 15,
-        height : 50,
-        color : "#000080",
+        height : 60,
+        color : "#FF1493",
         posX : 30,
         posY : 50,
         score: 0,
@@ -67,7 +67,7 @@ var game = {
     playerTwo : {
         id : 2,
         width : 15,
-        height : 50,
+        height : 60,
         color : "#FF4500",
         posX : 650,
         posY : 50,
@@ -87,15 +87,11 @@ var game = {
 
         this.groundLayer = game.display.createLayer("terrain", this.groundWidth, this.groundHeight, undefined, 0, "#DCDCDC", 0, 0);
 
-        game.display.drawRectangleInLayer(this.groundLayer, this.netWidth, this.groundHeight, this.netColor, this.groundWidth/2 - this.netWidth/2, 0);
+        game.display.drawRectangleInLayer(this.groundLayer, this.netWidth, this.groundHeight, '#000000', this.groundWidth/2 - this.netWidth/2, 0);
         this.scoreLayer = game.display.createLayer("score", this.groundWidth, this.groundHeight, undefined, 1, undefined, 0, 0);
 
         game.display.drawTextInLayer(this.scoreLayer, "SCORE", "10px Arial", "#000000", 10, 10);
         this.playersBallLayer = game.display.createLayer("joueursetballe", this.groundWidth, this.groundHeight, undefined, 2, undefined, 0, 0);
-
-        // Séparation terrain
-        game.display.drawRectangleInLayer(this.groundLayer, this.netWidth, this.groundHeight, this.netColor,
-            this.groundWidth / 2 - this.netWidth / 2, 0);
 
         game.display.drawTextInLayer(this.playersBallLayer, "JOUEURSETBALLE", "10px Arial", "#000000", 100, 100);
 
