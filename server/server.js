@@ -166,7 +166,6 @@ setInterval(function(){
 
 // Attrape une connexion
 io.on('connection', (socket) => {
-    console.log('a user connected', socket);
     console.log("Utilisateur Connecté");
     socket.join(room);
     // Initialisation du jeu
