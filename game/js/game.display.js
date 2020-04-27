@@ -15,7 +15,7 @@ game.display = {
             this.context2D.clearRect(0, 0, this.canvas.width, this.canvas.height);
         }
     },
-
+    // Layer de base
     createLayer : function(name, width, height, htmlContainer , zIndex, backgroundColor, x, y) {
         var layer = Object.create(this.layer);
 
@@ -37,44 +37,30 @@ game.display = {
 
         if ( x !== undefined )
             layer.posX = x;
-
         if ( y !== undefined )
             layer.posY = y;
-
         layer.canvas.style.position = "absolute";
         if ( x !== undefined )
             layer.canvas.style.left = x;
-
         if ( y !== undefined )
             layer.canvas.style.top = y;
-
         if ( htmlContainer !== undefined ) {
             htmlContainer.appendChild(layer.canvas);
         } else {
             document.body.appendChild(layer.canvas);
         }
-
-        if ( htmlContainer !== undefined ) {
-            htmlContainer.appendChild(layer.canvas);
-        } else {
-            document.body.appendChild(layer.canvas);
-        }
-
         layer.context2D = layer.canvas.getContext('2d');
-
         return layer;
     },
-
-    // Rectangle de separation du terrain
-    drawRectangleInLayer : function(targetLayer, width, heigth, color, x, y) {
-        targetLayer.context2D.fillStyle = color;
-        targetLayer.context2D.fillRect (x, y, width, heigth);
-    },
-
-    // Intégrer du texte sur le terrain
+    // Mettre du texte sur le terrain
     drawTextInLayer : function(targetLayer, text, font, color, x, y) {
         targetLayer.context2D.font = font;
         targetLayer.context2D.fillStyle = color;
         targetLayer.context2D.fillText(text, x, y);
     },
+    // Dessiner des rectangles
+    drawRectangleInLayer : function(targetLayer, width, heigth, color, x, y) {
+        targetLayer.context2D.fillStyle = color;
+        targetLayer.context2D.fillRect (x, y, width, heigth);
+    }
 };
