@@ -1,0 +1,8 @@
+#rules{
+    position: absolute;
+    left: 90%;
+    top : 70%;
+    border: 5px solid black;
+    background-color: black;
+    color: white;
+}
