@@ -5,7 +5,6 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const path_1 = __importDefault(require("path"));
-const path_2 = __importDefault(require("path"));
 var express = require('express');
 const app = express_1.default();
 let http = require('http').Server(app);
@@ -14,10 +13,10 @@ let io = require('socket.io')(http);
 // ROUTE
 // ------------------------
 app.get('/', (req, res) => {
-    res.sendFile(path_1.default.join(__dirname, '..', 'public', 'pong.html'));
+    res.sendFile(path_1.default.join(__dirname, '..', 'game', 'pong.html'));
 });
 
-app.use("/js", express.static('../public/js/'));
+app.use("/js", express.static('../game/js/'));
 
 let game = {
     groundWidth : 900,
